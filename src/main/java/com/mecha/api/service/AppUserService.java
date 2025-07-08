@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.mecha.api.exceptions.NotFoundException;
 import com.mecha.api.model.AppUser;
 import com.mecha.api.repository.IAppUserRepository;
 import com.mecha.api.service.interfaces.IAppUserService;
@@ -25,15 +26,16 @@ public class AppUserService implements IAppUserService {
     }
     
     @Override
-    public void save(AppUser appUser) {
+    public AppUser save(AppUser appUser) {
         // Encriptar la contraseña antes de guardar
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
         appUserRepository.save(appUser);
+        return appUser;
     }
     
     @Override
     public AppUser findById(Long id) {
-        return appUserRepository.findById(id).orElseThrow(() -> new RuntimeException("AppUser not found"));
+        return appUserRepository.findById(id).orElseThrow(() -> new NotFoundException("user not founded"));
     }
     
     @Override
@@ -43,12 +45,13 @@ public class AppUserService implements IAppUserService {
     }
     
     @Override
-    public void update(Long id, AppUser appUser) {
+    public AppUser update(Long id, AppUser appUser) {
         AppUser appUserUpdated = this.findById(id);
-        appUserUpdated.setUsername(appUser.getUsername());
         appUserUpdated.setEmail(appUser.getEmail());
-        // Encriptar la contraseña antes de guardar
         appUserUpdated.setPassword(passwordEncoder.encode(appUser.getPassword()));
+        appUserUpdated.setAlias(appUser.getAlias());
+        appUserUpdated.setName(appUser.getName());
+        appUserUpdated.setLastname(appUser.getLastname());
         appUserUpdated.setPhoneNumber(appUser.getPhoneNumber());
         appUserUpdated.setEnabled(appUser.isEnabled());
         appUserUpdated.setAccountNotExpired(appUser.isAccountNotExpired());
@@ -56,6 +59,7 @@ public class AppUserService implements IAppUserService {
         appUserUpdated.setCredentialNotExpired(appUser.isCredentialNotExpired());
         appUserUpdated.setRoles(appUser.getRoles());
         appUserRepository.save(appUserUpdated);
+        return appUserUpdated;
     }
     
 }

@@ -9,5 +9,5 @@ import com.mecha.api.model.AppUser;
 
 @Repository
 public interface IAppUserRepository extends JpaRepository<AppUser, Long> {
-    Optional<AppUser> findByUsername(String username);
+    Optional<AppUser> findByEmail(String email);
 }

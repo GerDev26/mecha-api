@@ -1,4 +1,4 @@
-package com.mecha.api.controller.v1;
+package com.mecha.api.controller;
 
 import java.util.List;
 
@@ -13,39 +13,45 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mecha.api.dto.api.ApiBodyDTO;
 import com.mecha.api.model.Role;
 import com.mecha.api.service.interfaces.IRoleService;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("role")
-@PreAuthorize("hasRole('ADMIN')")
 public class RoleController {
 
     @Autowired
     private IRoleService roleService;
     
     @GetMapping
-    public List<Role> index() {
-        return roleService.findAll();
+    public ResponseEntity<ApiBodyDTO> index() {
+        List<Role> roles = roleService.findAll();
+        return ResponseEntity.ok(new ApiBodyDTO("Showing all Roles", roles));
     }
     
     @GetMapping("/{id}")
-    public Role show(@PathVariable Long id) {
-        return roleService.findById(id);
+    public ResponseEntity<ApiBodyDTO> show(@PathVariable Long id) {
+        Role role = roleService.findById(id);
+        return ResponseEntity.ok(new ApiBodyDTO("Showing Role", role));
     }
     
     @PostMapping
-    public void store(@RequestBody Role role) {
+    public ResponseEntity<ApiBodyDTO> store(@RequestBody Role role) {
         roleService.save(role);
+        return ResponseEntity.created(null).body(new ApiBodyDTO("Role created successfully"));
     }
     
     @PutMapping("/{id}")
-    public void update(@PathVariable Long id, @RequestBody Role role) {
+    public ResponseEntity<ApiBodyDTO> update(@PathVariable Long id, @RequestBody Role role) {
         roleService.update(id, role);
+        return ResponseEntity.ok(new ApiBodyDTO("Role updated successfully"));
     }
     
     @DeleteMapping("/{id}")
-    public void destroy(@PathVariable Long id) {
+    public ResponseEntity<ApiBodyDTO> destroy(@PathVariable Long id) {
         roleService.deleteById(id);
+        return ResponseEntity.ok(new ApiBodyDTO("Role deleted successfully"));
     }
 }

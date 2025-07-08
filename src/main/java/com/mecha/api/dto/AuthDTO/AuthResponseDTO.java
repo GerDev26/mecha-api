@@ -1,4 +1,4 @@
-package com.mecha.api.dto;
+package com.mecha.api.dto.AuthDTO;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 

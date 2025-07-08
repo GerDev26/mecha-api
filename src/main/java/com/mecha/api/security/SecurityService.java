@@ -16,11 +16,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.mecha.api.dto.AuthResponseDTO;
+import com.mecha.api.dto.AuthDTO.AuthLoginRequestDTO;
+import com.mecha.api.dto.AuthDTO.AuthResponseDTO;
 import com.mecha.api.model.AppUser;
 import com.mecha.api.repository.IAppUserRepository;
 import com.mecha.api.security.JwtService;
-import com.mecha.api.dto.AuthLoginRequestDTO;
 
 @Service
 public class SecurityService implements UserDetailsService {
@@ -39,7 +39,7 @@ public class SecurityService implements UserDetailsService {
 
         //tenemos User sec y necesitamos devolver UserDetails
         //traemos el usuario de la bd
-        AppUser userSec = userRepo.findByUsername(username)
+        AppUser userSec = userRepo.findByEmail(username)
                 .orElseThrow(()-> new UsernameNotFoundException("El usuario " + username + "no fue encontrado"));
 
         //con GrantedAuthority Spring Security maneja permisos
@@ -52,7 +52,7 @@ public class SecurityService implements UserDetailsService {
 
 
         //retornamos el usuario en formato Spring Security con los datos de nuestro userSec
-        return new User(userSec.getUsername(),
+        return new User(userSec.getEmail(),
                 userSec.getPassword(),
                 userSec.isEnabled(),
                 userSec.isAccountNotExpired(),
@@ -68,7 +68,7 @@ public class SecurityService implements UserDetailsService {
             this.closeSession();
         }
 
-        String username = authLoginRequest.username();
+        String username = authLoginRequest.email();
         String password = authLoginRequest.password();
 
         Authentication authentication = this.authenticate (username, password);
@@ -90,7 +90,7 @@ public class SecurityService implements UserDetailsService {
         UserDetails userDetails = this.loadUserByUsername(username);
 
         if (userDetails==null) {
-            throw new BadCredentialsException("Ivalid username or password");
+            throw new BadCredentialsException("Ivalid email or password");
         }
         // si no es igual
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {

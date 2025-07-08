@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.mecha.api.model.Role;
 import com.mecha.api.repository.IRoleRepository;
 import com.mecha.api.service.interfaces.IRoleService;
+import com.mecha.api.exceptions.NotFoundException;
 
 @Service
 public class RoleService implements IRoleService {
@@ -19,12 +20,13 @@ public class RoleService implements IRoleService {
         return roleRepository.findAll();
     }
 
-    public void save(Role role) {
+    public Role save(Role role) {
         roleRepository.save(role);
+        return role;
     }
 
     public Role findById(Long id) {
-        return roleRepository.findById(id).orElseThrow(() -> new RuntimeException("Role not found"));
+        return roleRepository.findById(id).orElseThrow(() -> new NotFoundException("Role not found"));
     }
 
     public void deleteById(Long id) {
@@ -32,9 +34,10 @@ public class RoleService implements IRoleService {
         roleRepository.delete(role);
     }
     
-    public void update(Long id, Role role) {
+    public Role update(Long id, Role role) {
         Role roleUpdated = this.findById(id);
         roleUpdated.setName(role.getName());
         roleRepository.save(roleUpdated);
+        return roleUpdated;
     }
 }

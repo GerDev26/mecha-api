@@ -5,7 +5,7 @@ import java.util.List;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "invoices")
@@ -22,10 +22,10 @@ public class Invoice {
     private Double total_price;
     
     @Column(nullable = false)
-    private LocalDateTime created_at;
+    private LocalDate created_at;
     
     @Column(nullable = false)
-    private LocalDateTime updated_at;
+    private LocalDate updated_at;
     
     @OneToMany(mappedBy = "invoice")
     private List<InvoiceReplacement> invoiceReplacements;
